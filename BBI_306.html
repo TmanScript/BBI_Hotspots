@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hotspot Stats Dashboard</title>
+  <style>
+    :root {
+      --primary-color: #0077cc;
+      --bg-light: #f4f6f8;
+      --text-dark: #333;
+      --card-bg: #ffffff;
+      --badge-online: #28a745;
+      --badge-offline: #dc3545;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 30px 20px;
+      gap: 20px;
+    }
+	
+    .home-icon {
+      position: absolute;
+      left: 20px;
+      font-size: 1.5rem;
+      color: white;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+
+    .home-icon:hover {
+      transform: scale(1.2);
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      padding: 24px;
+      width: 100%;
+      max-width: 350px;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      color: var(--primary-color);
+      border-bottom: 1px solid #eee;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      font-size: 1.1rem;
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .online {
+      background-color: var(--badge-online);
+    }
+
+    .offline {
+      background-color: var(--badge-offline);
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+  <a href="BBI_Map.html" class="home-icon" title="Go to Map">🏠 Go Home</a>
+    📊 BBI 306 Hotspot Stats 
+  </header>
+
+  <main class="dashboard">
+    <div class="card" id="gauteng-card">Loading Gauteng...</div>
+    <div class="card" id="limpopo-card">Loading Limpopo...</div>
+    <div class="card" id="online-percentage-card">Calculating Online %...</div>
+    <div class="card" id="offline-percentage-card">Calculating Offline %...</div>
+  </main>
+
+  <script>
+    const apiKey = "AIzaSyBDoDUEjXdXV2zSoiypzy9CGa-KhJat6a8";
+    const spreadsheetId = "1cBnc1BEoxxWaw-ZuudxbvnVCYeQcFdjVdwhFvq-Fyoo";
+
+    async function fetchCell(range) {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      return data.values ? parseInt(data.values[0][0] || "0") : 0;
+    }
+
+    async function loadDashboard() {
+      // Gauteng Stats
+      const ax820OnlineG = await fetchCell("Gauteng_306_Stats!B23");
+      const ax820OfflineG = await fetchCell("Gauteng_306_Stats!B24");
+      const baicellsOnlineG = await fetchCell("Gauteng_306_Stats!B13");
+      const baicellsOfflineG = await fetchCell("Gauteng_306_Stats!B14");
+
+      document.getElementById("gauteng-card").innerHTML = `
+        <h2>Gauteng</h2>
+        <div class="stat"><span>AX820 Online</span><span class="badge online">${ax820OnlineG}</span></div>
+        <div class="stat"><span>AX820 Offline</span><span class="badge offline">${ax820OfflineG}</span></div>
+        <div class="stat"><span>Baicells Online</span><span class="badge online">${baicellsOnlineG}</span></div>
+        <div class="stat"><span>Baicells Offline</span><span class="badge offline">${baicellsOfflineG}</span></div>
+      `;
+
+      // Limpopo Stats
+      const ax820OnlineL = await fetchCell("Limpopo_306_Stats!F2");
+      const ax820OfflineL = await fetchCell("Limpopo_306_Stats!G2");
+      const baicellsOnlineL = await fetchCell("Limpopo_306_Stats!A6");
+      const baicellsOfflineL = await fetchCell("Limpopo_306_Stats!B6");
+
+      document.getElementById("limpopo-card").innerHTML = `
+        <h2>Limpopo</h2>
+        <div class="stat"><span>AX820 Online</span><span class="badge online">${ax820OnlineL}</span></div>
+        <div class="stat"><span>AX820 Offline</span><span class="badge offline">${ax820OfflineL}</span></div>
+        <div class="stat"><span>Baicells Online</span><span class="badge online">${baicellsOnlineL}</span></div>
+        <div class="stat"><span>Baicells Offline</span><span class="badge offline">${baicellsOfflineL}</span></div>
+      `;
+
+      // Calculate Totals and Percentages
+      const totalOnline = ax820OnlineG + baicellsOnlineG + ax820OnlineL + baicellsOnlineL;
+      const totalOffline = ax820OfflineG + baicellsOfflineG + ax820OfflineL + baicellsOfflineL;
+      const total = totalOnline + totalOffline;
+
+      const percentageOnline = total ? ((totalOnline / total) * 100).toFixed(1) : "0";
+      const percentageOffline = total ? ((totalOffline / total) * 100).toFixed(1) : "0";
+
+      document.getElementById("online-percentage-card").innerHTML = `
+        <h2>Percentage Online</h2>
+        <div class="stat"><span>Total Devices</span><span>${total}</span></div>
+        <div class="stat"><span>Online</span><span class="badge online">${percentageOnline}%</span></div>
+      `;
+
+      document.getElementById("offline-percentage-card").innerHTML = `
+        <h2>Percentage Offline</h2>
+        <div class="stat"><span>Total Devices</span><span>${total}</span></div>
+        <div class="stat"><span>Offline</span><span class="badge offline">${percentageOffline}%</span></div>
+      `;
+    }
+
+    // Load now and refresh every 20 minutes
+    loadDashboard();
+    setInterval(loadDashboard, 20 * 60 * 1000);
+  </script>
+</body>
+</html>
