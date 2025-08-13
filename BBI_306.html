@@ -111,7 +111,7 @@
 <body>
 
   <header>
-  <a href="index.html" class="home-icon" title="Go to Map">🏠 Go Home</a>
+    <a href="BBI_Map.html" class="home-icon" title="Go to Map">🏠</a>
     📊 BBI 306 Hotspot Stats 
   </header>
 
@@ -140,12 +140,18 @@
       const baicellsOnlineG = await fetchCell("Gauteng_306_Stats!B13");
       const baicellsOfflineG = await fetchCell("Gauteng_306_Stats!B14");
 
+      const gautengTotalOnline = ax820OnlineG + baicellsOnlineG;
+      const gautengTotalOffline = ax820OfflineG + baicellsOfflineG;
+
       document.getElementById("gauteng-card").innerHTML = `
         <h2>Gauteng</h2>
         <div class="stat"><span>AX820 Online</span><span class="badge online">${ax820OnlineG}</span></div>
         <div class="stat"><span>AX820 Offline</span><span class="badge offline">${ax820OfflineG}</span></div>
         <div class="stat"><span>Baicells Online</span><span class="badge online">${baicellsOnlineG}</span></div>
         <div class="stat"><span>Baicells Offline</span><span class="badge offline">${baicellsOfflineG}</span></div>
+        <hr>
+        <div class="stat"><strong>Total Online</strong><span class="badge online">${gautengTotalOnline}</span></div>
+        <div class="stat"><strong>Total Offline</strong><span class="badge offline">${gautengTotalOffline}</span></div>
       `;
 
       // Limpopo Stats
@@ -154,17 +160,23 @@
       const baicellsOnlineL = await fetchCell("Limpopo_306_Stats!A6");
       const baicellsOfflineL = await fetchCell("Limpopo_306_Stats!B6");
 
+      const limpopoTotalOnline = ax820OnlineL + baicellsOnlineL;
+      const limpopoTotalOffline = ax820OfflineL + baicellsOfflineL;
+
       document.getElementById("limpopo-card").innerHTML = `
         <h2>Limpopo</h2>
         <div class="stat"><span>AX820 Online</span><span class="badge online">${ax820OnlineL}</span></div>
         <div class="stat"><span>AX820 Offline</span><span class="badge offline">${ax820OfflineL}</span></div>
         <div class="stat"><span>Baicells Online</span><span class="badge online">${baicellsOnlineL}</span></div>
         <div class="stat"><span>Baicells Offline</span><span class="badge offline">${baicellsOfflineL}</span></div>
+        <hr>
+        <div class="stat"><strong>Total Online</strong><span class="badge online">${limpopoTotalOnline}</span></div>
+        <div class="stat"><strong>Total Offline</strong><span class="badge offline">${limpopoTotalOffline}</span></div>
       `;
 
       // Calculate Totals and Percentages
-      const totalOnline = ax820OnlineG + baicellsOnlineG + ax820OnlineL + baicellsOnlineL;
-      const totalOffline = ax820OfflineG + baicellsOfflineG + ax820OfflineL + baicellsOfflineL;
+      const totalOnline = gautengTotalOnline + limpopoTotalOnline;
+      const totalOffline = gautengTotalOffline + limpopoTotalOffline;
       const total = totalOnline + totalOffline;
 
       const percentageOnline = total ? ((totalOnline / total) * 100).toFixed(1) : "0";
@@ -187,5 +199,6 @@
     loadDashboard();
     setInterval(loadDashboard, 20 * 60 * 1000);
   </script>
+
 </body>
 </html>
