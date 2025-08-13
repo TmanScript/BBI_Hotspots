@@ -32,6 +32,7 @@
       text-align: center;
       font-size: 1.5rem;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
     }
 
     .dashboard {
@@ -142,6 +143,7 @@
 
       const gautengTotalOnline = ax820OnlineG + baicellsOnlineG;
       const gautengTotalOffline = ax820OfflineG + baicellsOfflineG;
+      const gautengGrandTotal = gautengTotalOnline + gautengTotalOffline;
 
       document.getElementById("gauteng-card").innerHTML = `
         <h2>Gauteng</h2>
@@ -152,6 +154,7 @@
         <hr>
         <div class="stat"><strong>Total Online</strong><span class="badge online">${gautengTotalOnline}</span></div>
         <div class="stat"><strong>Total Offline</strong><span class="badge offline">${gautengTotalOffline}</span></div>
+        <div class="stat"><strong>Grand Total</strong><span class="badge" style="background-color: var(--primary-color);">${gautengGrandTotal}</span></div>
       `;
 
       // Limpopo Stats
@@ -162,6 +165,7 @@
 
       const limpopoTotalOnline = ax820OnlineL + baicellsOnlineL;
       const limpopoTotalOffline = ax820OfflineL + baicellsOfflineL;
+      const limpopoGrandTotal = limpopoTotalOnline + limpopoTotalOffline;
 
       document.getElementById("limpopo-card").innerHTML = `
         <h2>Limpopo</h2>
@@ -172,6 +176,7 @@
         <hr>
         <div class="stat"><strong>Total Online</strong><span class="badge online">${limpopoTotalOnline}</span></div>
         <div class="stat"><strong>Total Offline</strong><span class="badge offline">${limpopoTotalOffline}</span></div>
+        <div class="stat"><strong>Grand Total</strong><span class="badge" style="background-color: var(--primary-color);">${limpopoGrandTotal}</span></div>
       `;
 
       // Calculate Totals and Percentages
