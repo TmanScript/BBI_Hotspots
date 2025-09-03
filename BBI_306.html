@@ -42,7 +42,7 @@
       padding: 30px 20px;
       gap: 20px;
     }
-	
+
     .home-icon {
       position: absolute;
       left: 20px;
@@ -113,7 +113,7 @@
 
   <header>
     <a href="BBI_Map.html" class="home-icon" title="Go to Map">🏠</a>
-    📊 BBI 306 Hotspot Stats 
+    📊 BBI 306 Hotspot Stats
   </header>
 
   <main class="dashboard">
@@ -145,6 +145,10 @@
       const gautengTotalOffline = ax820OfflineG + baicellsOfflineG;
       const gautengGrandTotal = gautengTotalOnline + gautengTotalOffline;
 
+      const gautengOnlinePercentage = gautengGrandTotal ? ((gautengTotalOnline / gautengGrandTotal) * 100).toFixed(1) : "0";
+      const gautengOfflinePercentage = gautengGrandTotal ? ((gautengTotalOffline / gautengGrandTotal) * 100).toFixed(1) : "0";
+
+
       document.getElementById("gauteng-card").innerHTML = `
         <h2>Gauteng</h2>
         <div class="stat"><span>AX820 Online</span><span class="badge online">${ax820OnlineG}</span></div>
@@ -155,6 +159,9 @@
         <div class="stat"><strong>Total Online</strong><span class="badge online">${gautengTotalOnline}</span></div>
         <div class="stat"><strong>Total Offline</strong><span class="badge offline">${gautengTotalOffline}</span></div>
         <div class="stat"><strong>Grand Total</strong><span class="badge" style="background-color: var(--primary-color);">${gautengGrandTotal}</span></div>
+        <hr>
+        <div class="stat"><span>Online %</span><span class="badge online">${gautengOnlinePercentage}%</span></div>
+        <div class="stat"><span>Offline %</span><span class="badge offline">${gautengOfflinePercentage}%</span></div>
       `;
 
       // Limpopo Stats
@@ -167,6 +174,9 @@
       const limpopoTotalOffline = ax820OfflineL + baicellsOfflineL;
       const limpopoGrandTotal = limpopoTotalOnline + limpopoTotalOffline;
 
+      const limpopoOnlinePercentage = limpopoGrandTotal ? ((limpopoTotalOnline / limpopoGrandTotal) * 100).toFixed(1) : "0";
+      const limpopoOfflinePercentage = limpopoGrandTotal ? ((limpopoTotalOffline / limpopoGrandTotal) * 100).toFixed(1) : "0";
+
       document.getElementById("limpopo-card").innerHTML = `
         <h2>Limpopo</h2>
         <div class="stat"><span>AX820 Online</span><span class="badge online">${ax820OnlineL}</span></div>
@@ -177,9 +187,12 @@
         <div class="stat"><strong>Total Online</strong><span class="badge online">${limpopoTotalOnline}</span></div>
         <div class="stat"><strong>Total Offline</strong><span class="badge offline">${limpopoTotalOffline}</span></div>
         <div class="stat"><strong>Grand Total</strong><span class="badge" style="background-color: var(--primary-color);">${limpopoGrandTotal}</span></div>
+        <hr>
+        <div class="stat"><span>Online %</span><span class="badge online">${limpopoOnlinePercentage}%</span></div>
+        <div class="stat"><span>Offline %</span><span class="badge offline">${limpopoOfflinePercentage}%</span></div>
       `;
 
-      // Calculate Totals and Percentages
+      // Calculate Totals and Percentages for overall
       const totalOnline = gautengTotalOnline + limpopoTotalOnline;
       const totalOffline = gautengTotalOffline + limpopoTotalOffline;
       const total = totalOnline + totalOffline;
@@ -188,13 +201,13 @@
       const percentageOffline = total ? ((totalOffline / total) * 100).toFixed(1) : "0";
 
       document.getElementById("online-percentage-card").innerHTML = `
-        <h2>Percentage Online</h2>
+        <h2>Overall Percentage Online</h2>
         <div class="stat"><span>Total Devices</span><span>${total}</span></div>
         <div class="stat"><span>Online</span><span class="badge online">${percentageOnline}%</span></div>
       `;
 
       document.getElementById("offline-percentage-card").innerHTML = `
-        <h2>Percentage Offline</h2>
+        <h2>Overall Percentage Offline</h2>
         <div class="stat"><span>Total Devices</span><span>${total}</span></div>
         <div class="stat"><span>Offline</span><span class="badge offline">${percentageOffline}%</span></div>
       `;
